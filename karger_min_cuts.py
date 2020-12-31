@@ -2,9 +2,9 @@ import random
 from random import randint
 
 class Karger_Minimum_Cuts:
-    def __init__(self, graph_file):
-        self.v = {}
-        self.e = 0
+    def __init__(self, graph_file): #instantiate a graph every time class is called based on txt file
+        self.v = {} #attribute for vertices
+        self.e = 0  #attribute for total number of edges
         with open(graph_file) as file:
             for index, line in enumerate(file):
                 numbers = [int(number) for number in line.split()]
@@ -12,9 +12,9 @@ class Karger_Minimum_Cuts:
                 self.e += len(numbers[1:])
 
     def random_edge(self):
-        random_edge = randint(0, self.e - 1)
+        random_edge = randint(0, self.e - 1) #Random integer that will be used to reference all edges
         for vertex, edges in self.v.items():
-            if len(edges) <= random_edge:
+            if len(edges) <= random_edge: #
                 random_edge -= len(edges)
             else:
                 from_vertex = vertex
