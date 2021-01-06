@@ -16,21 +16,31 @@ class Kosaraju:
                 else:
                     self.graph_r[value].append(key)
 
+#DFS Topo helper function to search graph and apply order numbers ie f(v) values
+def dfs_topo(self, s, exploredTopo, curLabel, topoOrder):
+    exploredTopo.append(s)
+    for v in self.graph_r[s]:
+        if v not in exploredTopo:
+            dfs_topo(self, v, exploredTopo, curLabel, topoOrder)
+    topoOrder[s] = curLabel
+    curLabel -= 1
+    return exploredTopo, curLabel, topoOrder
 
-
-
-#Instantiate an object for data file and fun Kosaraju on it
-graph_object = Kosaraju('data.txt')
-
-
-
-
-
-
-#Topological Sort Helper Function
-
+#Topological sort helper function to find order of reversed graph
+def topo_sort(self):
+    topoOrder = {}
+    exploredTopo = []
+    curLabel = len(self.graph_r)
+    for v in self.graph_r:
+        if v not in exploredTopo:
+            exploredTopo += dfs_topo(self, v, exploredTopo, curLabel, topoOrder)[0]
+            topoOrder.udpate(dfs_topo(self, v, exploredTopo, curLabel, topoOrder)[2])
+            curLabel = dfs_topo(self, v, exploredTopo, curLabel, topoOrder)[1]
+    return topoOrder
 
 #Depth-First-Search with SCC label Helper Function
 
 
-#Kosaraju
+#Instantiate an object for data file and run Kosaraju on it
+graph_object = Kosaraju('data.txt')
+print(topo_sort(graph_object))
