@@ -22,16 +22,29 @@ class Kosaraju:
                     self.graph_r[value].append(key)
 
 #Kosaraju
-def kosaraju(self):
+def kosaraju_scc(self):
     order = topo_sort(self)
     self.exploredTopo = []
     self.scc_number = 0
     self.scc = {}
-    for v in sorted(order.items(), key=lambda x: x[1]):
+    for v in order:
         if v not in self.exploredTopo:
             self.scc_number += 1
             self.exploredTopo, self.scc = dfs_scc(self, v)
-    return self.scc_number, self.scc
+    scc_list = list(set(self.scc.values()))
+    top5 = {}
+    for i in scc_list:
+        top5[i] = 0
+    while len(top5) < 5:
+        top5[len(top5)+1] = 0
+    for j in self.scc:
+        for k in top5.keys():
+            if self.scc[j] == k:
+                top5[k] = top5[k] + 1
+    top5 = {k: v for k, v in sorted(top5.items(), key=lambda item: item[1])}
+    top5 = list(top5.values())
+    top5 = [top5[-1], top5[-2], top5[-3], top5[-4], top5[-5]]
+    return top5
 
 #Topological sort helper function to find order of reversed graph
 def topo_sort(self):
@@ -41,6 +54,7 @@ def topo_sort(self):
     for v in self.graph_r:
         if v not in self.exploredTopo:
             self.exploredTopo, self.topoOrder, self.curLabel = dfs_topo(self, v)
+    self.topoOrder = {k: v for k, v in sorted(self.topoOrder.items(), key=lambda item: item[1])}
     return self.topoOrder
 
 #DFS Topo helper function to search graph and apply order numbers ie f(v) values
@@ -65,5 +79,4 @@ def dfs_scc(self, s):
 #Instantiate an object for data file and run Kosaraju on it
 if __name__ == '__main__':
     graph_object = Kosaraju('test_data.txt')
-    order1 = topo_sort(graph_object)
-    print(sorted(order1.items(), key=lambda x: x[1]))
+    print(kosaraju_scc(graph_object))
