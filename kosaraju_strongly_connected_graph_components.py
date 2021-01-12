@@ -20,6 +20,13 @@ class Kosaraju:
                     self.graph_r[value] = [key]
                 else:
                     self.graph_r[value].append(key)
+        for i in range(1, len(self.graph)+1):
+            if i not in self.graph.keys():
+                self.graph[i] = []
+        for i in range(1, len(self.graph_r)+1):
+            if i not in self.graph_r.keys():
+                self.graph_r[i] = []
+
 
 #Kosaraju
 def kosaraju_scc(self):
@@ -78,5 +85,5 @@ def dfs_scc(self, s):
 
 #Instantiate an object for data file and run Kosaraju on it
 if __name__ == '__main__':
-    graph_object = Kosaraju('test_data.txt')
-    print(kosaraju_scc(graph_object))
+    graph_object = Kosaraju('data.txt')
+    print(graph_object.graph_r[811897])
