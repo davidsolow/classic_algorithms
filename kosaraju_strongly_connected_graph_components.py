@@ -1,10 +1,6 @@
 #Import libraries
-import resource
 import sys
-#resource.setrlimit(resource.RLIMIT_STACK, [0x10000000, resource.RLIM_INFINITY])
-#sys.setrecursionlimit(0x100000)
-#print(resource.getrlimit(resource.RLIMIT_STACK))
-#print(sys.getrecursionlimit())
+import threading
 
 #Define class and get file into an adjacency list
 class Kosaraju:
@@ -85,7 +81,7 @@ def dfs_topo(self, s):
 
 def dfs_topo_iterative(self, s):
     stack = [s]
-    while len(stack) != 0:
+    while stack:
         v = stack[0]
         stack.pop(0)
         if v not in self.exploredTopo:
@@ -106,6 +102,13 @@ def dfs_scc(self, s):
     return self.exploredTopo, self.scc
 
 #Instantiate an object for data file and run Kosaraju on it
+def main():
+    threading.stack_size(67108864)
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=main)
+    thread.start()
+
 if __name__ == '__main__':
-    graph_object = Kosaraju('test_data.txt')
+    main()
+    graph_object = Kosaraju('data.txt')
     print(kosaraju_scc(graph_object))
