@@ -1,24 +1,25 @@
 #Import libraries
-import sys
-import threading
+import sys, threading
+sys.setrecursionlimit(800000)
+threading.stack_size(67108864)
 
 #Define class and get file into an adjacency list
 class Kosaraju:
-    def __init__(self, graph_file): #object instantiated based on a text file with one column of 'from' vertices and a second colume of 'to' vertices separated by new lines
+    def __init__(self, graph_file, number_of_vertices): #object instantiated based on a text file with one column of 'from' vertices and a second colume of 'to' vertices separated by new lines
         self.graph = {} #our normal graph
         self.graph_r = {}   #reversed graph for initial DFS search
-        self.all_vertices = set()
         self.topoOrder = {}
-        self.exploredTopo = []
-        self.curLabel = len(self.graph)
+        self.number_of_vertices = number_of_vertices
+        self.exploredTopo = {}
+        for i in range(1, number_of_vertices+1):
+            self.exploredTopo[i] = False
+        self.curLabel = number_of_vertices
         self.scc_number = 0
         self.scc = {}
         with open(graph_file) as file:
             for index, line in enumerate(file):
                 key = int(line.split()[0])  #dictionary key for adjacency list (from vertex is always a key)
                 value = int(line.split()[1])    #dictionary value for adjacency list (to vertices are always values)
-                self.all_vertices.add(key)
-                self.all_vertices.add(value)
                 if key not in self.graph:
                     self.graph[key] = [value]   #make first entry a list
                 else:
@@ -27,7 +28,7 @@ class Kosaraju:
                     self.graph_r[value] = [key]
                 else:
                     self.graph_r[value].append(key)
-        for i in self.all_vertices:
+        for i in range(1,number_of_vertices+1):
             if i not in self.graph.keys():
                 self.graph[i] = []
             if i not in self.graph_r.keys():
@@ -36,11 +37,11 @@ class Kosaraju:
 #Kosaraju
 def kosaraju_scc(self):
     order = topo_sort(self)
-    self.exploredTopo = []
+    self.exploredTopo = dict.fromkeys(self.exploredTopo, False)
     self.scc_number = 0
     self.scc = {}
     for v in order:
-        if v not in self.exploredTopo:
+        if self.exploredTopo[v] == False:
             self.scc_number += 1
             self.exploredTopo, self.scc = dfs_scc(self, v)
     scc_list = list(set(self.scc.values()))
@@ -61,54 +62,37 @@ def kosaraju_scc(self):
 #Topological sort helper function to find order of reversed graph
 def topo_sort(self):
     self.topoOrder = {}
-    self.exploredTopo = []
-    self.curLabel = len(self.graph_r)
+    self.exploredTopo = dict.fromkeys(self.exploredTopo, False)
+    self.curLabel = self.number_of_vertices
     for v in self.graph_r:
-        if v not in self.exploredTopo:
-            self.exploredTopo, self.topoOrder, self.curLabel = dfs_topo_iterative(self, v)
+        if self.exploredTopo[v] == False:
+            self.exploredTopo, self.topoOrder, self.curLabel = dfs_topo(self, v)
     self.topoOrder = {k: v for k, v in sorted(self.topoOrder.items(), key=lambda item: item[1])}
     return self.topoOrder
 
 #DFS Topo helper function to search graph and apply order numbers ie f(v) values
 def dfs_topo(self, s):
-    self.exploredTopo.append(s)
+    self.exploredTopo[s] = True
     for v in self.graph_r[s]:
-        if v not in self.exploredTopo:
+        if self.exploredTopo[v] == False:
             dfs_topo(self, v)
     self.topoOrder[s] = self.curLabel
     self.curLabel -= 1
     return self.exploredTopo, self.topoOrder, self.curLabel
 
-def dfs_topo_iterative(self, s):
-    stack = [s]
-    while stack:
-        v = stack[0]
-        stack.pop(0)
-        if v not in self.exploredTopo:
-            self.exploredTopo.append(v)
-            for w in self.graph_r[v]:
-                stack.insert(0, w)
-            self.topoOrder[v] = self.curLabel
-            self.curLabel -= 1
-    return self.exploredTopo, self.topoOrder, self.curLabel
-
 #DFS scc helper function to go through normal graph and accrue SCCs
 def dfs_scc(self, s):
-    self.exploredTopo.append(s)
+    self.exploredTopo[s] = True
     self.scc[s] = self.scc_number
     for v in self.graph[s]:
-        if v not in self.exploredTopo:
+        if self.exploredTopo[v] == False:
             dfs_scc(self, v)
     return self.exploredTopo, self.scc
 
 #Instantiate an object for data file and run Kosaraju on it
 def main():
-    threading.stack_size(67108864)
-    sys.setrecursionlimit(2 ** 20)
-    thread = threading.Thread(target=main)
-    thread.start()
-
-if __name__ == '__main__':
-    main()
-    graph_object = Kosaraju('data.txt')
-    print(kosaraju_scc(graph_object))
+    if __name__ == '__main__':
+        graph_object = Kosaraju('test_data.txt', 12)
+        print(kosaraju_scc(graph_object))
+thread = threading.Thread(target=main)
+thread.start()
