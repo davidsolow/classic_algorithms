@@ -1,17 +1,38 @@
+import datetime
+
 #read the input
 class dijkstra_shortest_paths:
     def __init__(self, graph_file): #instantiate a graph every time class is called based on txt file
         self.graph = {} #attribute for graph
-        with open(graph_file) as file:
-            for index, line in enumerate(file):
-                items = [item for item in line.split()]
-                key = int(items[0])
-                #for i in range(1,len(items)):
-                    #items[i] = [int(j) for j in items[i][0]]
-                self.graph[key] = [value for value in items[1:]]
+        with open(graph_file, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                items = line.split()
+                values = []
+                for item in items:
+                    if ',' not in item:
+                        key = int(item)
+                    else:
+                        value = [int(i) for i in item.split(",")]
+                        values.append(value)
+                self.graph[key] = values
 
-graph_object = dijkstra_shortest_paths('test_data.txt')
-print(graph_object.graph)
+def dijkstra(self, s):
+    X = {s}
+    self.paths = {}
+    self.paths[s] = [0, []]
+    for i in self.graph:
+        if i != s:
+            self.paths[i] = [1000000,[]]
+    return self.paths
+
+if __name__ == '__main__':
+    started = datetime.datetime.now()
+    graph_object = dijkstra_shortest_paths('test_data.txt')
+    print(dijkstra(graph_object, 1))
+    ended = datetime.datetime.now()
+    runtime = ended - started
+    print("Runtime: ", runtime)
 
 ##TEST CASES ------------------------------------------------------------------------------------------------
 #Test 1: Input reads correctly
@@ -34,3 +55,4 @@ answer = {1: [0, []],
           6: [4, [8,7,6]],
           7: [3, [8,7]],
           8: [2, [8]]}
+print(str(answer) == str(dijkstra(graph_object, 1)))
