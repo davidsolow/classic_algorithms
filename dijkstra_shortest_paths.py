@@ -4,17 +4,17 @@ import datetime
 class dijkstra_shortest_paths:
     def __init__(self, graph_file): #instantiate a graph every time class is called based on txt file
         self.graph = {} #attribute for graph
+        self.edges = [] #attribute for graph edges alone
         with open(graph_file, 'r') as f:
             lines = f.readlines()
             for line in lines:
                 items = line.split()
+                key = int(items[0])
                 values = []
-                for item in items:
-                    if ',' not in item:
-                        key = int(item)
-                    else:
-                        value = [int(i) for i in item.split(",")]
-                        values.append(value)
+                for item in items[1:]:
+                    value = [int(i) for i in item.split(",")]
+                    values.append(value)
+                    self.edges.append([key,value[0],value[1]])
                 self.graph[key] = values
 
 def dijkstra(self, s):
@@ -24,12 +24,19 @@ def dijkstra(self, s):
     for i in self.graph:
         if i != s:
             self.paths[i] = [1000000,[]]
+    while [edge for edge in self.edges if edge[0] in X and edge[1] not in X]:
+        vstartwstar = min([edge for edge in self.edges if edge[0] in X and edge[1] not in X], key=lambda x: self.paths[x[0]][0]+x[2])
+        X.add(vstartwstar[1])
+        self.paths[vstartwstar[1]][0] = self.paths[vstartwstar[0]][0]+vstartwstar[2]
+        self.paths[vstartwstar[1]][1] = self.paths[vstartwstar[0]][1]+[vstartwstar[1]]
     return self.paths
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
     graph_object = dijkstra_shortest_paths('test_data.txt')
-    print(dijkstra(graph_object, 1))
+    print(graph_object.graph)
+    print(graph_object.edges)
+    print(dijkstra(graph_object,1))
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)
@@ -50,7 +57,7 @@ print(str(input) == str(graph_object.graph))
 answer = {1: [0, []],
           2: [1, [2]],
           3: [2, [2,3]],
-          4: [2, [2,3,4]],
+          4: [3, [2,3,4]],
           5: [4, [2,3,4,5]],
           6: [4, [8,7,6]],
           7: [3, [8,7]],
