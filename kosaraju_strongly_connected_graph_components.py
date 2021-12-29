@@ -9,7 +9,7 @@ class Kosaraju:
         self.graph = {} #our normal graph
         self.graph_r = {}   #reversed graph for initial DFS search
         self.topoOrder = {} #will store topographical order of reversed graph later used to identify SCCs in normal graph
-        for i in range(1, number_of_vertices+1):    #Insantiate each vertex's topo order as 0
+        for i in range(1, number_of_vertices+1):    #Instantiate each vertex's topo order as 0
             self.topoOrder[i] = 0
         self.number_of_vertices = number_of_vertices    #store number of vertices so that functions can be re-run on same object
         self.exploredTopo = {}  #stores booleans for whether or not each vertex has been explored during depth first search routines
