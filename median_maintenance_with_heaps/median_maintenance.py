@@ -20,7 +20,7 @@ Args:
 def tracksum_median(list):
     h1 = []
     h2 = []
-    median_sum = 0
+    median_sum = list[0]
     if list[0] < list[1]:
         h1.append(list[0])
         h2.append(list[1])
@@ -29,7 +29,16 @@ def tracksum_median(list):
         h1.append(list[1])
     median = h1[0]
     median_sum += median
-    for i in list[2:]:
+    for i in list[2:200]:
+        # print('Before--------------------')
+        # print('Ordered?: ', h1[0] <= h2[0])
+        # print('x: ', i)
+        # print('h1 max: ', h1[0])
+        # print('h1 real max: ', max(h1))
+        # print('h2 min: ', h2[0])
+        # print('h2 real min: ', min(h2))
+        # print('h1 len: ', len(h1))
+        # print('h2 len: ', len(h2))
         if i < h2[0]:
             h1 = heap_insert_max(h1, i)
         else:
@@ -40,10 +49,24 @@ def tracksum_median(list):
         elif len(h2) - len(h1) > 1:
             h1 = heap_insert_max(h1, h2[0])
             h2 = heap_extract_min(h2)
-        median = h1[0]
+        if len(h2) > len(h1):
+            median = h2[0]
+        else:
+            median = h1[0]
         median_sum += median
-        #print(len(h1)-len(h2))
-        print(list.index(i), i, h1[0], h2[0], h1[0] <= h2[0])
+        if h2[0] != min(h2):
+            print('After--------------------')
+            print('Ordered?: ', h1[0] <= h2[0])
+            print('x: ', i)
+            print('h1 max: ', h1[0])
+            print('h1 real max: ', max(h1))
+            print('h2 min: ', h2[0])
+            print('h2 real min: ', min(h2))
+            print('h1 len: ', len(h1))
+            print('h2 len: ', len(h2))
+            if i in h1:
+                print('x put in h1')
+            else: print('x put in h2')
     return median_sum
 
 # Helper function to insert for heap built for extracting maximumus
@@ -70,48 +93,56 @@ def heap_insert_min(heap, value):
 
 # Helper function for extracting max from heap
 def heap_extract_max(heap):
-    position = 0
-    heap[position] = heap.pop()
-    left_child = position * 2 + 1
-    right_child = position * 2 + 2
-    while (left_child <= len(heap)-1 and right_child <= len(heap)-1) and (heap[position] < heap[left_child] or heap[position] < heap[right_child]):
-            if heap[left_child] > heap[right_child]:
-                largest = left_child
-            else:
-                largest = right_child
-            heap[position], heap[largest] = heap[largest], heap[position]
-            position = largest
-            left_child = position * 2 + 1
-            right_child = position * 2 + 2
-    if left_child <= len(heap)-1:
-        if heap[left_child] > heap[position]:
-            heap[position], heap[left_child] = heap[left_child], heap[position]
+    heap[0] = heap.pop()
+    heap = bubble_down_max(heap, 0)
     return heap
 
-# Helper function for extracting min from heap
+def bubble_down_max(heap, position):
+    left_child_position = position * 2 + 1
+    right_child_position = position * 2 + 2
+    if (left_child_position <= len(heap)-1 and right_child_position <= len(heap)-1) and (heap[position] < heap[left_child_position] or heap[position] < heap[right_child_position]):
+        if heap[left_child_position] > heap[right_child_position]:
+            heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
+            position = left_child_position
+        else:
+            heap[position], heap[right_child_position] = heap[right_child_position], heap[position]
+            position = right_child_position
+        bubble_down_max(heap, position)
+    elif left_child_position <= len(heap)-1 and heap[position] < heap[left_child_position]:
+        heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
+        position = left_child_position
+        bubble_down_max(heap, position)
+    return heap
+
+# %% Helper function for extracting min from heap
 def heap_extract_min(heap):
-    position = 0
-    heap[position] = heap.pop()
-    left_child = position * 2 + 1
-    right_child = position * 2 + 2
-    while (left_child <= len(heap)-1 and right_child <= len(heap)-1) and (heap[position] > heap[left_child] or heap[position] > heap[right_child]):
-            if heap[left_child] < heap[right_child]:
-                smallest = left_child
-            else:
-                smallest = right_child
-            heap[position], heap[smallest] = heap[smallest], heap[position]
-            position = smallest
-            left_child = position * 2 + 1
-            right_child = position * 2 + 2
-    if left_child <= len(heap)-1:
-        if heap[left_child] < heap[position]:
-            heap[position], heap[left_child] = heap[left_child], heap[position]
+    heap[0] = heap.pop()
+    heap = bubble_down_min(heap, 0)
     return heap
 
+def bubble_down_min(heap, position):
+    left_child_position = position * 2 + 1
+    right_child_position = position * 2 + 2
+    if (left_child_position <= len(heap)-1 and right_child_position <= len(heap)-1) and (heap[position] > heap[left_child_position] or heap[position] > heap[right_child_position]):
+        if heap[left_child_position] < heap[right_child_position]:
+            heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
+            position = left_child_position
+        else:
+            heap[position], heap[right_child_position] = heap[right_child_position], heap[position]
+            position = right_child_position
+        bubble_down_min(heap, position)
+    elif left_child_position <= len(heap)-1 and heap[position] > heap[left_child_position]:
+        heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
+        position = left_child_position
+        bubble_down_min(heap, position)
+    return heap
+
+# %% codecell
 if __name__ == '__main__':
     started = datetime.datetime.now()
     object = median_maintenance('median_maintenance_with_heaps/median_maintenance.txt').values
-    print(tracksum_median(object))
+    tracksum_median(object)
+    #print(tracksum_median(object))
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)
