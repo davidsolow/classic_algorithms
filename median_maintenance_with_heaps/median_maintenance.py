@@ -29,16 +29,8 @@ def tracksum_median(list):
         h1.append(list[1])
     median = h1[0]
     median_sum += median
-    for i in list[2:200]:
-        # print('Before--------------------')
-        # print('Ordered?: ', h1[0] <= h2[0])
-        # print('x: ', i)
-        # print('h1 max: ', h1[0])
-        # print('h1 real max: ', max(h1))
-        # print('h2 min: ', h2[0])
-        # print('h2 real min: ', min(h2))
-        # print('h1 len: ', len(h1))
-        # print('h2 len: ', len(h2))
+    num_medians = 2
+    for i in list[2:]:
         if i < h2[0]:
             h1 = heap_insert_max(h1, i)
         else:
@@ -54,41 +46,35 @@ def tracksum_median(list):
         else:
             median = h1[0]
         median_sum += median
-        if h2[0] != min(h2):
-            print('After--------------------')
-            print('Ordered?: ', h1[0] <= h2[0])
-            print('x: ', i)
-            print('h1 max: ', h1[0])
-            print('h1 real max: ', max(h1))
-            print('h2 min: ', h2[0])
-            print('h2 real min: ', min(h2))
-            print('h1 len: ', len(h1))
-            print('h2 len: ', len(h2))
-            if i in h1:
-                print('x put in h1')
-            else: print('x put in h2')
-    return median_sum
+        num_medians += 1
+    return median_sum, num_medians
 
 # Helper function to insert for heap built for extracting maximumus
 def heap_insert_max(heap, value):
     heap.append(value)
-    child = len(heap)-1
-    parent = child // 2
-    while heap[parent] < heap[child] and child != 0:
-        heap[parent], heap[child] = heap[child], heap[parent]
-        child = child // 2
-        parent = parent // 2
+    heap = bubble_up_max(heap, len(heap)-1)
     return heap
 
-# Helper function to insert for heap built for extraming minimums
+def bubble_up_max(heap, position):
+    parent_position = (position-1) // 2
+    if position != 0 and heap[parent_position] < heap[position]:
+        heap[parent_position], heap[position] = heap[position], heap[parent_position]
+        position = parent_position
+        bubble_up_max(heap, position)
+    return heap
+
+# Helper function to insert for heap built for extracting minimums
 def heap_insert_min(heap, value):
     heap.append(value)
-    child = len(heap)-1
-    parent = child // 2
-    while heap[parent] > heap[child] and child != 0:
-        heap[parent], heap[child] = heap[child], heap[parent]
-        child = child // 2
-        parent = parent // 2
+    heap = bubble_up_min(heap, len(heap)-1)
+    return heap
+
+def bubble_up_min(heap, position):
+    parent_position = (position-1) // 2
+    if position != 0 and heap[parent_position] > heap[position]:
+        heap[parent_position], heap[position] = heap[position], heap[parent_position]
+        position = parent_position
+        bubble_up_min(heap, position)
     return heap
 
 # Helper function for extracting max from heap
@@ -114,7 +100,7 @@ def bubble_down_max(heap, position):
         bubble_down_max(heap, position)
     return heap
 
-# %% Helper function for extracting min from heap
+# Helper function for extracting min from heap
 def heap_extract_min(heap):
     heap[0] = heap.pop()
     heap = bubble_down_min(heap, 0)
@@ -137,12 +123,11 @@ def bubble_down_min(heap, position):
         bubble_down_min(heap, position)
     return heap
 
-# %% codecell
+
 if __name__ == '__main__':
     started = datetime.datetime.now()
     object = median_maintenance('median_maintenance_with_heaps/median_maintenance.txt').values
-    tracksum_median(object)
-    #print(tracksum_median(object))
+    print(tracksum_median(object))
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)
