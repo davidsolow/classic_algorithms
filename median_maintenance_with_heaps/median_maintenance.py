@@ -8,7 +8,7 @@ class median_maintenance:
             for line in lines:
                 items = line.split()
                 self.values.append(int(items[0]))
-        self.median_sum = tracksum_median(self.values)
+        self.median_sum = median_maintenance.tracksum_median(self.values)
 
     """
     tracksum:
@@ -33,15 +33,15 @@ class median_maintenance:
         num_medians = 2
         for i in list[2:]:
             if i < h2[0]:
-                h1 = heap_insert_max(h1, i)
+                h1 = median_maintenance.heap_insert_max(h1, i)
             else:
-                h2 = heap_insert_min(h2, i)
+                h2 = median_maintenance.heap_insert_min(h2, i)
             if len(h1) - len(h2) > 1:
-                h2 = heap_insert_min(h2, h1[0])
-                h1 = heap_extract_max(h1)
+                h2 = median_maintenance.heap_insert_min(h2, h1[0])
+                h1 = median_maintenance.heap_extract_max(h1)
             elif len(h2) - len(h1) > 1:
-                h1 = heap_insert_max(h1, h2[0])
-                h2 = heap_extract_min(h2)
+                h1 = median_maintenance.heap_insert_max(h1, h2[0])
+                h2 = median_maintenance.heap_extract_min(h2)
             if len(h2) > len(h1):
                 median = h2[0]
             else:
@@ -53,7 +53,7 @@ class median_maintenance:
     # Helper method to insert for heap built for extracting maximumus
     def heap_insert_max(heap, value):
         heap.append(value)
-        heap = bubble_up_max(heap, len(heap)-1)
+        heap = median_maintenance.bubble_up_max(heap, len(heap)-1)
         return heap
 
     def bubble_up_max(heap, position):
@@ -61,13 +61,13 @@ class median_maintenance:
         if position != 0 and heap[parent_position] < heap[position]:
             heap[parent_position], heap[position] = heap[position], heap[parent_position]
             position = parent_position
-            bubble_up_max(heap, position)
+            median_maintenance.bubble_up_max(heap, position)
         return heap
 
     # Helper method to insert for heap built for extracting minimums
     def heap_insert_min(heap, value):
         heap.append(value)
-        heap = bubble_up_min(heap, len(heap)-1)
+        heap = median_maintenance.bubble_up_min(heap, len(heap)-1)
         return heap
 
     def bubble_up_min(heap, position):
@@ -75,13 +75,13 @@ class median_maintenance:
         if position != 0 and heap[parent_position] > heap[position]:
             heap[parent_position], heap[position] = heap[position], heap[parent_position]
             position = parent_position
-            bubble_up_min(heap, position)
+            median_maintenance.bubble_up_min(heap, position)
         return heap
 
     # Helper method for extracting max from heap
     def heap_extract_max(heap):
         heap[0] = heap.pop()
-        heap = bubble_down_max(heap, 0)
+        heap = median_maintenance.bubble_down_max(heap, 0)
         return heap
 
     def bubble_down_max(heap, position):
@@ -94,17 +94,17 @@ class median_maintenance:
             else:
                 heap[position], heap[right_child_position] = heap[right_child_position], heap[position]
                 position = right_child_position
-            bubble_down_max(heap, position)
+            median_maintenance.bubble_down_max(heap, position)
         elif left_child_position <= len(heap)-1 and heap[position] < heap[left_child_position]:
             heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
             position = left_child_position
-            bubble_down_max(heap, position)
+            median_maintenance.bubble_down_max(heap, position)
         return heap
 
     # Helper method for extracting min from heap
     def heap_extract_min(heap):
         heap[0] = heap.pop()
-        heap = bubble_down_min(heap, 0)
+        heap = median_maintenance.bubble_down_min(heap, 0)
         return heap
 
     def bubble_down_min(heap, position):
@@ -117,11 +117,11 @@ class median_maintenance:
             else:
                 heap[position], heap[right_child_position] = heap[right_child_position], heap[position]
                 position = right_child_position
-            bubble_down_min(heap, position)
+            median_maintenance.bubble_down_min(heap, position)
         elif left_child_position <= len(heap)-1 and heap[position] > heap[left_child_position]:
             heap[position], heap[left_child_position] = heap[left_child_position], heap[position]
             position = left_child_position
-            bubble_down_min(heap, position)
+            median_maintenance.bubble_down_min(heap, position)
         return heap
 
 
