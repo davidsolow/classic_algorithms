@@ -50,7 +50,7 @@ class SLC:
         graph = sorted(self.graph, key=lambda x: x[2])
         parent = [i for i in range(self.n+1)]
         rank = [0 for i in range(self.n+1)]
-        count = self.n
+        count = len(self.raw_graph.keys())
         for edge in graph:
             x = self.find(parent, edge[0])
             y = self.find(parent, edge[1])
@@ -62,7 +62,7 @@ class SLC:
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
-    object = SLC('data.txt', 200000)
+    object = SLC('data.txt', n = 200000)
     print(object.max_k)
     ended = datetime.datetime.now()
     runtime = ended - started
