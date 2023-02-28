@@ -1,40 +1,63 @@
 import datetime
+
 class SLC:
-    def __init__(self, data, k = 4):
+    def __init__(self, data, k=4):
         self.graph = []
         self.k = k
         with open(data, 'r') as f:
             lines = f.readlines()
+            self.n = int(lines[0].strip())
             for line in lines[1:]:
                 items = line.split()
                 items = [int(i) for i in items]
                 self.graph.append(items)
-        self.max_dist = SLC.slc(self)
-    def slc(self):
-        clusters = {}
-        for e in self.graph:
-            clusters[e[0]] = e[0]
-            clusters[e[1]] = e[1]
-        k = len(set(clusters.values()))
-        max_dist = max([edge for edge in self.graph], key = lambda x: x[2])
-        min_edge = min([edge for edge in self.graph if clusters[edge[0]] != clusters[edge[1]]], key = lambda x: x[2])
-        print("Before:        ", clusters, min_edge, max_dist)
-        while k > self.k:
-            min_edge = min([edge for edge in self.graph if clusters[edge[0]] != clusters[edge[1]]], key = lambda x: x[2])
-            clusters[min_edge[1]] = clusters[min_edge[0]]
-            k = len(set(clusters.values()))
-            max_dist = max([edge for edge in self.graph if clusters[edge[0]] == clusters[edge[1]]], key = lambda x: x[2])
-            
-            print("Iteration ", k, ": ", clusters, min_edge, max_dist)
+        self.max_dist = self.slc()
 
-        return clusters, max_dist
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+
+    def union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
+
+    def slc(self):
+        t = []
+        graph = sorted(self.graph, key=lambda x: x[2])
+        parent = [i for i in range(self.n+1)]
+        rank = [0 for i in range(self.n+1)]
+        count = self.n
+        for edge in graph:
+            x = self.find(parent, edge[0])
+            y = self.find(parent, edge[1])
+            if x != y:
+                t.append(edge)
+                self.union(parent, rank, x, y)
+                count -= 1
+                if count == self.k:
+                    break
+
+        max_spacing = float('inf')
+        for edge in graph:
+            x = self.find(parent, edge[0])
+            y = self.find(parent, edge[1])
+            if x != y and edge[2] < max_spacing:
+                max_spacing = edge[2]
+        return max_spacing
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
-    object = SLC('test.txt', k = 2)
+    object = SLC('data.txt', k=2)
     print(object.max_dist)
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)
-
-# Test answer: 5 for k = 2
