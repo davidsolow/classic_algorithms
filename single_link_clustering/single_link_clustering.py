@@ -1,12 +1,12 @@
 import datetime
 
 class SLC:
-    def __init__(self, data, k=4):
+    def __init__(self, data, n, k=4):
         self.graph = []
         self.k = k
         with open(data, 'r') as f:
             lines = f.readlines()
-            self.n = int(lines[0].strip())
+            self.n = n
             for line in lines[1:]:
                 items = line.split()
                 items = [int(i) for i in items]
@@ -56,7 +56,7 @@ class SLC:
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
-    object = SLC('data.txt', k=2)
+    object = SLC('data.txt', n = 500, k=4)
     print(object.max_dist)
     ended = datetime.datetime.now()
     runtime = ended - started
