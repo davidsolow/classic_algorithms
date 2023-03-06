@@ -1,7 +1,4 @@
 import datetime
-import heapq
-import sys
-sys.setrecursionlimit(5000)
 
 class Floyd:
     def __init__(self, data):
@@ -17,7 +14,6 @@ class Floyd:
         self.shortest_path = self.floyd()
 
     def floyd(self):
-        heap = []
         previous_array = [[None for w in range(self.v)] for v in range(self.v)]
         array = [[None for w in range(self.v)] for v in range(self.v)]
         for v in range(self.v):
@@ -32,25 +28,20 @@ class Floyd:
             for v in range(self.v):
                 for w in range(self.v):
                     array[v][w] = min(previous_array[v][w], previous_array[v][k] + previous_array[k][w])
-        
+            previous_array = array     
         for v in range(self.v):
             if array[v][v] < 0:
                 return "Negative Cycle"
-        for v in range(self.v):
-            for w in range(self.v):
-                heapq.heappush(heap, array[v][w])
-        return array
+        return min(min(array, key = min))
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
-    # object1 = Floyd('data1.txt')
-    # object2 = Floyd('data2.txt')
-    # object3 = Floyd('data3.txt')
-    # print(object1.shortest_path)
-    # print(object2.shortest_path)
-    # print(object3.shortest_path)
-    object = Floyd('test.txt')
-    print(object.shortest_path)
+    object1 = Floyd('data1.txt')
+    object2 = Floyd('data2.txt')
+    object3 = Floyd('data3.txt')
+    print(object1.shortest_path)
+    print(object2.shortest_path)
+    print(object3.shortest_path)
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)

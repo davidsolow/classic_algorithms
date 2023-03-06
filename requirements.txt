@@ -3,3 +3,4 @@ statistics
 ipykernel
 ortools
 scipy
+Cython
