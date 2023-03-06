@@ -1,5 +1,4 @@
 import datetime
-import math
 import heapq
 
 class Huffman:
