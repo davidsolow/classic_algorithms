@@ -18,35 +18,39 @@ class Floyd:
 
     def floyd(self):
         heap = []
-        array = [[[None for k in range(self.v)] for w in range(self.v)] for v in range(self.v)]
+        previous_array = [[None for w in range(self.v)] for v in range(self.v)]
+        array = [[None for w in range(self.v)] for v in range(self.v)]
         for v in range(self.v):
             for w in range(self.v):
                 if v == w:
-                    array[v][w][0] = 0
+                    previous_array[v][w] = 0
                 elif (v+1,w+1) in self.graph.keys():
-                    array[v][w][0] = self.graph[(v+1,w+1)]
+                    previous_array[v][w] = self.graph[(v+1,w+1)]
                 else:
-                    array[v][w][0] = float('inf')
+                    previous_array[v][w] = float('inf')
         for k in range(1, self.v):
             for v in range(self.v):
                 for w in range(self.v):
-                    array[v][w][k] = min(array[v][w][k-1], array[v][k][k-1] + array[k][w][k-1])
+                    array[v][w] = min(previous_array[v][w], previous_array[v][k] + previous_array[k][w])
+        
         for v in range(self.v):
-            if array[v][v][self.v-1] < 0:
+            if array[v][v] < 0:
                 return "Negative Cycle"
         for v in range(self.v):
             for w in range(self.v):
-                heapq.heappush(heap, array[v][w][self.v-1])
-        return heap[0]
+                heapq.heappush(heap, array[v][w])
+        return array
 
 if __name__ == '__main__':
     started = datetime.datetime.now()
-    object1 = Floyd('data1.txt')
-    object2 = Floyd('data2.txt')
-    object3 = Floyd('data3.txt')
-    print(object1.shortest_path)
-    print(object2.shortest_path)
-    print(object3.shortest_path)
+    # object1 = Floyd('data1.txt')
+    # object2 = Floyd('data2.txt')
+    # object3 = Floyd('data3.txt')
+    # print(object1.shortest_path)
+    # print(object2.shortest_path)
+    # print(object3.shortest_path)
+    object = Floyd('test.txt')
+    print(object.shortest_path)
     ended = datetime.datetime.now()
     runtime = ended - started
     print("Runtime: ", runtime)

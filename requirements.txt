@@ -2,3 +2,4 @@ datetime
 statistics
 ipykernel
 ortools
+scipy
