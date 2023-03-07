@@ -29,9 +29,8 @@ class TSP:
                     if m == 1:
                         current[S][j] = TSP.get_distance(self, 0, j)
                     else:
-                        ij = (S)
-                        ij = tuple(x for x in ij if x != j)
-                        current[S][j] = min([previous[(ij)][k] + TSP.get_distance(self, k, j) for k in ij if k != j])
+                        subs = tuple(x for x in S if x != j)
+                        current[S][j] = min([previous[(subs)][k] + TSP.get_distance(self, k, j) for k in subs if k != j])
             previous = current.copy()
         return min([current[(combs[0])][j] + TSP.get_distance(self, 0, j) for j in range(1, self.n)])
 
