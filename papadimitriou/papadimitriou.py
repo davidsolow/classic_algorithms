@@ -15,13 +15,10 @@ class Papa:
             clause_vals.add(second)
         self.clauses = {tup for tup in self.clauses if all(-val in clause_vals for val in tup)}
         counts = Counter(abs(val) for tup in self.clauses for val in tup)
-        counter = 0
         while min(counts.values()) < 2:
             self.clauses = {tup for tup in self.clauses if all(-val in clause_vals for val in tup)}
             self.clauses = {tup for tup in self.clauses if all(counts[abs(val)] > 1 for val in tup)}
             counts = Counter(abs(val) for tup in self.clauses for val in tup)
-            counter += 1
-        print(counter)
         self.value_counts = defaultdict(int)
         for first, second in self.clauses:
             self.value_counts[first] += 1
@@ -33,7 +30,7 @@ class Papa:
             if second < 0:
                 self.values[second] = False
         self.n = len(self.values.keys())
-        self.solution = self.n, len(self.clauses)
+        self.solution = self.papa()
     
     def papa(self):
         for i in range(round(2*(self.n**2))):
@@ -53,8 +50,6 @@ class Papa:
 if __name__ == "__main__":
     def main():
         started = datetime.datetime.now()
-        # test_object = Papa('test.txt')
-        # print(test_object.solution)
         obj = Papa('data1.txt')
         print(obj.solution)
         ended = datetime.datetime.now()
